@@ -4,10 +4,10 @@ local RunService = game:GetService("RunService")
 local LOCAL_PLAYER = Players.LocalPlayer
 
 local whitelist = {
-	Owner = {4279175156, 4202838123, 4307561815, 4380912728, 4240568437, 4285053824, 4398416967, 4262245137},
+	Owner = {4279175156, 4202838123, 4307561815, 4380912728, 4240568437},
 	Private = {
-		5413983848, 4191327145, 1848051618, 1965898454, 1666325842, 1513390800, 4263613723,
-		1983015440, 3204169739, 1880511134, 314732068, 3932037947, 570843764, 4359746469,
+		5413983848, 4191327145, 1848051618, 1965898454, 1666325842, 1513390800,
+		1983015440, 3204169739, 1880511134, 314732068, 3932037947, 570843764,
 	},
 	Slow = {1562251033}
 }
@@ -124,10 +124,9 @@ TextChatService.MessageReceived:Connect(function(msg)
 	exec(t, uid)
 end)
 
+-- Downloader
 local isfile = isfile or function(file)
-	local suc, res = pcall(function()
-		return readfile(file)
-	end)
+	local suc, res = pcall(function() return readfile(file) end)
 	return suc and res ~= nil and res ~= ''
 end
 
@@ -138,13 +137,11 @@ end
 local function downloadFile(path, func)
 	if not isfile(path) then
 		local suc, res = pcall(function()
-			return game:HttpGet('https://raw.githubusercontent.com/Trxiste/WurstClientForBloxD/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
+			return game:HttpGet('https://raw.githubusercontent.com/Noveign/VapeV4ForRoblox/' .. readfile('newvape/profiles/commit.txt') .. '/' .. select(1, path:gsub('newvape/', '')), true)
 		end)
-		if not suc or res == '404: Not Found' then
-			error(res)
-		end
-		if path:find('.lua') then
-			res = '--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.\n'..res
+		if not suc or res == '404: Not Found' then error(res) end
+		if path:find('%.lua') then
+			res = '--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.\n' .. res
 		end
 		writefile(path, res)
 	end
@@ -162,14 +159,12 @@ local function wipeFolder(path)
 end
 
 for _, folder in {'newvape', 'newvape/games', 'newvape/profiles', 'newvape/assets', 'newvape/libraries', 'newvape/guis'} do
-	if not isfolder(folder) then
-		makefolder(folder)
-	end
+	if not isfolder(folder) then makefolder(folder) end
 end
 
 if not shared.VapeDeveloper then
 	local _, subbed = pcall(function()
-		return game:HttpGet('https://github.com/Trxiste/WurstClientForBloxD')
+		return game:HttpGet('https://github.com/Noveign/VapeV4ForRoblox')
 	end)
 	local commit = subbed:find('currentOid')
 	commit = commit and subbed:sub(commit + 13, commit + 52) or nil
@@ -183,4 +178,4 @@ if not shared.VapeDeveloper then
 	writefile('newvape/profiles/commit.txt', commit)
 end
 
-return loadstring(downloadFile('newvape/main.lua'), 'main')()
+return loadstring(downloadFile('newvape/main.lua'))()
